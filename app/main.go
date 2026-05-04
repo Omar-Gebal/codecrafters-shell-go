@@ -18,19 +18,27 @@ func main() {
 		inputWords := strings.Fields(input)
 		command := inputWords[0]
 		arguments := inputWords[1:]
+		var output strings.Builder
+
 		if command == "exit" {
 			break
 		} else if command == "echo" {
-			var output string
 			for i, v := range arguments {
-				output += v
+				output.WriteString(v)
 				if i != len(arguments)-1 {
-					output += " "
+					output.WriteString(" ")
 				}
 			}
-			fmt.Println(output)
+		} else if command == "type" {
+			if arguments[0] == "echo" || arguments[0] == "exit" {
+				output.WriteString(fmt.Sprintf("%s is a shell builtin", arguments[0]))
+			} else {
+				output.WriteString(fmt.Sprintf("%s: not found", arguments[0]))
+			}
+
 		} else {
-			fmt.Printf("%s: command not found\n", input)
+			output.WriteString(fmt.Sprintf("%s: command not found", input))
 		}
+		fmt.Println(output.String())
 	}
 }
