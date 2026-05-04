@@ -30,7 +30,7 @@ func main() {
 				}
 			}
 		} else if command == "type" {
-			if arguments[0] == "echo" || arguments[0] == "exit" {
+			if arguments[0] == "echo" || arguments[0] == "exit" || arguments[0] == "type" {
 				output.WriteString(fmt.Sprintf("%s is a shell builtin", arguments[0]))
 			} else {
 				output.WriteString(fmt.Sprintf("%s: not found", arguments[0]))
