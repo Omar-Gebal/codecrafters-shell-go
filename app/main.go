@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -30,12 +31,15 @@ func main() {
 				}
 			}
 		} else if command == "type" {
-			if arguments[0] == "echo" || arguments[0] == "exit" || arguments[0] == "type" {
+			checkedCommand := arguments[0]
+			if checkedCommand == "echo" || checkedCommand == "exit" || checkedCommand == "type" {
 				output.WriteString(fmt.Sprintf("%s is a shell builtin", arguments[0]))
+			} else if path, err := exec.LookPath(arguments[0]); err == nil {
+				output.WriteString(fmt.Sprintf("%s is %s", checkedCommand, path))
+
 			} else {
 				output.WriteString(fmt.Sprintf("%s: not found", arguments[0]))
 			}
-
 		} else {
 			output.WriteString(fmt.Sprintf("%s: command not found", input))
 		}
