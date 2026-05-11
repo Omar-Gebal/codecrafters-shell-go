@@ -25,7 +25,6 @@ func main() {
 		arguments := inputWords[1:]
 
 		var output string
-		var externalCommandPath, externalCommandErr = exec.LookPath(command)
 		switch command {
 		case "exit":
 			os.Exit(0)
@@ -38,13 +37,13 @@ func main() {
 			checkedCommand := arguments[0]
 			if checkedCommand == "echo" || checkedCommand == "exit" || checkedCommand == "type" {
 				output = fmt.Sprintf("%s is a shell builtin", arguments[0])
-			} else if externalCommandErr == nil {
-				output = fmt.Sprintf("%s is %s", checkedCommand, externalCommandPath)
+			} else if path, err := exec.LookPath(command); err == nil {
+				output = fmt.Sprintf("%s is %s", checkedCommand, path)
 			} else {
 				output = fmt.Sprintf("%s: not found", arguments[0])
 			}
 		default:
-			if externalCommandErr == nil {
+			if _, err := exec.LookPath(command); err == nil {
 				cmd := exec.Command(command, arguments...)
 				out, err := cmd.Output()
 				if err != nil {
