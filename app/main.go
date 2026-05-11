@@ -56,7 +56,6 @@ func main() {
 				output = fmt.Sprintf("%s: command not found", input)
 			}
 		}
-
 		fmt.Println(strings.TrimSpace(output))
 	}
 }
