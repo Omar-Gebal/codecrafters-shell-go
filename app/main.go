@@ -37,7 +37,7 @@ func main() {
 			checkedCommand := arguments[0]
 			if checkedCommand == "echo" || checkedCommand == "exit" || checkedCommand == "type" {
 				output = fmt.Sprintf("%s is a shell builtin", arguments[0])
-			} else if path, err := exec.LookPath(command); err == nil {
+			} else if path, err := exec.LookPath(arguments[0]); err == nil {
 				output = fmt.Sprintf("%s is %s", checkedCommand, path)
 			} else {
 				output = fmt.Sprintf("%s: not found", arguments[0])
