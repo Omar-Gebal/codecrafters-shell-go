@@ -29,13 +29,17 @@ func main() {
 			break
 		} else if command == "echo" {
 			output = strings.Join(arguments, " ")
-		} else if _, err := exec.LookPath(command); err == nil {
-			cmd := exec.Command(command, arguments...)
+		} else if path, err := exec.LookPath(command); err == nil {
+			cmd := exec.Command(path, arguments...)
 			out, err := cmd.CombinedOutput()
 			if err != nil {
 				continue
 			}
 			fmt.Printf("%s\n", out)
+			// execErr := syscall.Exec(binary, args, env)
+			// if execErr != nil {
+			// 	panic(execErr)
+			// }
 		} else if command == "type" {
 			if len(arguments) == 0 {
 				continue
