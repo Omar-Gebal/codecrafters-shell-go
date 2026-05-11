@@ -29,17 +29,6 @@ func main() {
 			break
 		} else if command == "echo" {
 			output = strings.Join(arguments, " ")
-		} else if path, err := exec.LookPath(command); err == nil {
-			cmd := exec.Command(path, arguments...)
-			out, err := cmd.CombinedOutput()
-			if err != nil {
-				continue
-			}
-			fmt.Printf("%s\n", out)
-			// execErr := syscall.Exec(binary, args, env)
-			// if execErr != nil {
-			// 	panic(execErr)
-			// }
 		} else if command == "type" {
 			if len(arguments) == 0 {
 				continue
@@ -52,9 +41,17 @@ func main() {
 			} else {
 				output = fmt.Sprintf("%s: not found", arguments[0])
 			}
+		} else if path, err := exec.LookPath(command); err == nil {
+			cmd := exec.Command(path, arguments...)
+			out, err := cmd.Output()
+			if err != nil {
+				output = err.Error()
+			} else {
+				output = string(out)
+			}
 		} else {
 			output = fmt.Sprintf("%s: command not found", input)
 		}
-		fmt.Println(output)
+		fmt.Println(strings.TrimSpace(output))
 	}
 }
