@@ -9,40 +9,48 @@ import (
 )
 
 func main() {
+	buffer := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Print("$ ")
-		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
+		input, err := buffer.ReadString('\n')
 		if err != nil {
 			fmt.Println(err)
 		}
 		input = strings.TrimSpace(input)
 		inputWords := strings.Fields(input)
+		if len(inputWords) < 1 {
+			continue
+		}
 		command := inputWords[0]
 		arguments := inputWords[1:]
-		var output strings.Builder
+		var output string
 
 		if command == "exit" {
 			break
 		} else if command == "echo" {
-			for i, v := range arguments {
-				output.WriteString(v)
-				if i != len(arguments)-1 {
-					output.WriteString(" ")
-				}
+			output = strings.Join(arguments, " ")
+		} else if _, err := exec.LookPath(command); err == nil {
+			cmd := exec.Command(command, arguments...)
+			out, err := cmd.CombinedOutput()
+			if err != nil {
+				continue
 			}
+			fmt.Printf("%s\n", out)
 		} else if command == "type" {
+			if len(arguments) == 0 {
+				continue
+			}
 			checkedCommand := arguments[0]
 			if checkedCommand == "echo" || checkedCommand == "exit" || checkedCommand == "type" {
-				output.WriteString(fmt.Sprintf("%s is a shell builtin", arguments[0]))
+				output = fmt.Sprintf("%s is a shell builtin", arguments[0])
 			} else if path, err := exec.LookPath(arguments[0]); err == nil {
-				output.WriteString(fmt.Sprintf("%s is %s", checkedCommand, path))
-
+				output = fmt.Sprintf("%s is %s", checkedCommand, path)
 			} else {
-				output.WriteString(fmt.Sprintf("%s: not found", arguments[0]))
+				output = fmt.Sprintf("%s: not found", arguments[0])
 			}
 		} else {
-			output.WriteString(fmt.Sprintf("%s: command not found", input))
+			output = fmt.Sprintf("%s: command not found", input)
 		}
-		fmt.Println(output.String())
+		fmt.Println(output)
 	}
 }
