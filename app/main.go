@@ -40,7 +40,7 @@ func main() {
 				continue
 			}
 			checkedCommand := arguments[0]
-			if checkedCommand == "echo" || checkedCommand == "exit" || checkedCommand == "type" {
+			if checkedCommand == "echo" || checkedCommand == "exit" || checkedCommand == "type" || checkedCommand == "pwd" {
 				output = fmt.Sprintf("%s is a shell builtin", arguments[0])
 			} else if path, err := exec.LookPath(arguments[0]); err == nil {
 				output = fmt.Sprintf("%s is %s", checkedCommand, path)
