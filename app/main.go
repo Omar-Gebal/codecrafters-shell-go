@@ -30,6 +30,11 @@ func main() {
 			os.Exit(0)
 		case "echo":
 			output = strings.Join(arguments, " ")
+		case "pwd":
+			output, err = os.Getwd()
+			if err != nil {
+				output = err.Error()
+			}
 		case "type":
 			if len(arguments) == 0 {
 				continue
